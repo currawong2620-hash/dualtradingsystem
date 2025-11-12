@@ -1,4 +1,4 @@
-## 📄 TECH_SPEC.md — *Dual-Mode Forex Trading System (v1.2)*
+## 📄 TECH_SPEC.md — *Dual-Mode Forex Trading System (v1.3)*
 
 ### 1. Overview
 
