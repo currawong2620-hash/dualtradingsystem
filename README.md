@@ -1,4 +1,4 @@
-# 📘 **README.md — Dual-Mode Forex System (v1.0 Core)**
+# **README.md — Dual-Mode Forex System (v1.0 Core)**
 
 # Dual-Mode Forex System  
 ### Adaptive Market-Regime EA for MetaTrader 5  

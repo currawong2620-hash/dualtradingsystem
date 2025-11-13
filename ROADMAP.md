@@ -1,4 +1,4 @@
-# 📘 **ROADMAP.md — Dual-Mode Forex System (v1.1–v2.0 Roadmap)**
+# **ROADMAP.md — Dual-Mode Forex System (v1.1–v2.0 Roadmap)**
 
 # ROADMAP.md  
 ## Dual-Mode Forex System — Development Roadmap (v1.1 → v2.0)

@@ -1,4 +1,4 @@
-# 📘 **TECH_SPEC.md — Dual-Mode Forex System (v1.0 Core Specification)**
+# **TECH_SPEC.md — Dual-Mode Forex System (v1.0 Core Specification)**
 
 # TECH_SPEC.md  
 ## Dual-Mode Forex System — Technical Specification (v1.0 Core)
