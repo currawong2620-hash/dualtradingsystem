@@ -35,24 +35,30 @@
 
 /src
 ├── Core
+│    ├── Config.mqh          # Входные параметры и глобальные константы
 │    ├── TFContext.mqh       # Индикаторы и первичные данные
 │    ├── Forecast.mqh        # Bias/μ/σ/confidence
 │    ├── ModeAnalyzer.mqh    # FSM режима: TREND/RANGE/TRANSITION
 │    └── Logging.mqh         # Логирование в файл и консоль
 │
 ├── Trade
-│    ├── Trade_Types.mqh     # Общие типы и enums
-│    ├── Trade_Stats.mqh     # PF, WinRate, Equity tracking
-│    ├── Trade_Simulator.mqh # Модель сделок (v1.0)
-│    ├── Trade_Manager.mqh   # Управление симуляцией и событиями бара
-│    ├── Trade_Risk.mqh      # Фреймворк риск-модели (резерв)
-│    ├── Trade_Entry.mqh     # Каркас входов (v1.1)
-│    └── Trade_Exit.mqh      # Каркас выходов (v1.1)
+│    ├── Trade_Types.mqh         # Общие типы и enums (TradeMode и пр.)
+│    ├── Trade_Stats.mqh         # PF, WinRate, Equity tracking
+│    ├── Trade_Simulator.mqh     # Модель сделок (v1.0)
+│    ├── Trade_Manager.mqh       # Управление торговлей (симуляция/реал)
+│    ├── Trade_Logger.mqh        # Логирование торговых действий
+│    ├── Trade_Risk.mqh          # Фреймворк риск-модели (в разработке)
+│    ├── Trade_Entry.mqh         # Каркас сигналов входа (не используется)
+│    ├── Trade_Exit.mqh          # Каркас сигналов выхода (не используется)
+│
+│    ├── TrendEngine.mqh         # ★ Трендовый движок (v1.1 ключевой модуль)
+│    └── RangeEngine.mqh         # ★ Диапазонный движок (v1.1, резерв)
 │
 ├── Panels
-│    └── Panel_Main.mqh      # Многострочная панель состояния
+│    └── Panel_Main.mqh          # Многострочная панель состояния
 │
-└── DualModeEA.mq5           # Главный файл эксперта
+└── DualModeEA.mq5               # Главный файл эксперта
+
 
 ```
 
