@@ -1,7 +1,9 @@
 ﻿#ifndef __PANEL_MAIN_MQH__
 #define __PANEL_MAIN_MQH__
+
 #include "../Core/ModeAnalyzer.mqh"
 #include "../Core/Forecast.mqh"
+#include "../Trade/Trade_Stats.mqh"
 
 #define PANEL_BG   "DM_TestPanel_BG"
 #define PANEL_LINE "DM_TestPanel_LINE_"
@@ -24,8 +26,8 @@ string StringRepeat(const string s,const int count)
 // цвет по режиму
 color RegimeTextColor(const ENUM_Regime r)
 {
-   if(r==REGIME_TREND) return clrLime;
-   if(r==REGIME_RANGE) return clrAqua;
+   if(r==REGIME_TREND)  return clrLime;
+   if(r==REGIME_RANGE)  return clrAqua;
    return clrYellow;
 }
 
@@ -42,11 +44,12 @@ bool PanelCreate(PanelState &p, const int x, const int y, const int w, const int
 {
    p.x=x; p.y=y; p.w=w; p.h=h; p.font="Consolas"; p.fontsize=10; p.lines=0;
    ObjectDelete(0,PANEL_BG);
-   for(int i=0;i<20;i++) ObjectDelete(0,PANEL_LINE+(string)i);
+   for(int i=0;i<40;i++) ObjectDelete(0,PANEL_LINE+(string)i);
 
    // фон
    if(!ObjectCreate(0,PANEL_BG,OBJ_RECTANGLE_LABEL,0,0,0))
       return false;
+
    ObjectSetInteger(0,PANEL_BG,OBJPROP_CORNER,CORNER_LEFT_UPPER);
    ObjectSetInteger(0,PANEL_BG,OBJPROP_XDISTANCE,p.x);
    ObjectSetInteger(0,PANEL_BG,OBJPROP_YDISTANCE,p.y);
@@ -64,13 +67,14 @@ bool PanelCreate(PanelState &p, const int x, const int y, const int w, const int
 void PanelDestroy()
 {
    ObjectDelete(0,PANEL_BG);
-   for(int i=0;i<20;i++) ObjectDelete(0,PANEL_LINE+(string)i);
+   for(int i=0;i<40;i++) ObjectDelete(0,PANEL_LINE+(string)i);
 }
 
 // вспомогательное форматирование
 string FormatLine(const string k,const string v,const int pad=12)
 {
-   string key=k; if(StringLen(key)<pad) key+=StringRepeat(" ",pad-StringLen(key));
+   string key=k;
+   if(StringLen(key)<pad) key+=StringRepeat(" ",pad-StringLen(key));
    return key+": "+v;
 }
 
@@ -78,8 +82,10 @@ string FormatLine(const string k,const string v,const int pad=12)
 void DrawLine(int index,const string text,int x,int y,color clr,const string font,int fontsize)
 {
    string name=PANEL_LINE+(string)index;
+
    if(ObjectFind(0,name)<0)
       ObjectCreate(0,name,OBJ_LABEL,0,0,0);
+
    ObjectSetInteger(0,name,OBJPROP_CORNER,CORNER_LEFT_UPPER);
    ObjectSetInteger(0,name,OBJPROP_XDISTANCE,x+8);
    ObjectSetInteger(0,name,OBJPROP_YDISTANCE,y+8+index*(fontsize+2));
@@ -92,31 +98,53 @@ void DrawLine(int index,const string text,int x,int y,color clr,const string fon
 }
 
 // обновление панели
-void PanelUpdate(const string symbol,const ENUM_TIMEFRAMES workTF,const ENUM_TIMEFRAMES seniorTF,
-                 const ForecastResult &work,const ForecastResult &senior,const ENUM_Regime regime)
+void PanelUpdate(const string symbol,
+                 const ENUM_TIMEFRAMES workTF,
+                 const ENUM_TIMEFRAMES seniorTF,
+                 const ForecastResult &work,
+                 const ForecastResult &senior,
+                 TradeStats &stats,
+                 const ENUM_Regime regime)
 {
    if(ObjectFind(0, PANEL_BG) < 0) return;
+
    color txtColor = RegimeTextColor(regime);
 
    string lines[];
-   ArrayResize(lines, 20);
+   ArrayResize(lines, 40);
    int n = 0;
 
    lines[n++] = "Dual-Mode EA — Test Panel";
+
+   // режим рынка
    lines[n++] = FormatLine("Symbol", symbol);
    lines[n++] = FormatLine("Global Regime",
-                 (regime==REGIME_TREND?"TREND":(regime==REGIME_RANGE?"RANGE":"TRANSITION")));
+                 (regime==REGIME_TREND?"TREND":
+                  (regime==REGIME_RANGE?"RANGE":"TRANSITION")));
    lines[n++] = "";
+
+   // Work TF
    lines[n++] = "Work TF (" + EnumToString(workTF) + ")";
    lines[n++] = StringFormat("  bias=%+.3f  μ=%+.3f  σ=%.3f  conf=%.2f",
                              work.bias, work.mu, work.sigma, work.confidence);
    lines[n++] = "  → " + LocalRegime(work);
    lines[n++] = "";
+
+   // Senior TF
    lines[n++] = "Senior TF (" + EnumToString(seniorTF) + ")";
    lines[n++] = StringFormat("  bias=%+.3f  μ=%+.3f  σ=%.3f  conf=%.2f",
                              senior.bias, senior.mu, senior.sigma, senior.confidence);
    lines[n++] = "  → " + LocalRegime(senior);
+   lines[n++] = "";
 
+   // Статистика торговли
+   lines[n++] = "Trade Statistics:";
+   lines[n++] = "  Equity:  " + DoubleToString(stats.equity,2);
+   lines[n++] = "  PF:      " + DoubleToString(stats.GetPF(),2);
+   lines[n++] = "  WinRate: " + DoubleToString(stats.GetWinRate(),1) + "%";
+   lines[n++] = "  Last:    " + DoubleToString(stats.lastProfit,2);
+
+   // рисуем строки
    for(int i=0;i<n;i++)
       DrawLine(i, lines[i], Inp_PanelX, Inp_PanelY, txtColor, "Consolas", 10);
 }

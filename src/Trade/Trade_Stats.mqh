@@ -1,43 +1,55 @@
 ﻿#ifndef __TRADE_STATS_MQH__
 #define __TRADE_STATS_MQH__
 
-#include "Trade_Logger.mqh"
-
 struct TradeStats
 {
-   int total;
-   int wins;
-   int losses;
+   double equity;
    double grossProfit;
    double grossLoss;
+   int wins;
+   int losses;
+   double lastProfit;
 
-   TradeLogger logger;
-
-   void Init(TradeLogger &log)
+   void Init()
    {
-      logger = log;
-      total = wins = losses = 0;
-      grossProfit = grossLoss = 0.0;
+      equity      = 0;
+      grossProfit = 0;
+      grossLoss   = 0;
+      wins        = 0;
+      losses      = 0;
+      lastProfit  = 0;
    }
 
    void Record(double profit)
    {
-      total++;
+      lastProfit = profit;
+      equity += profit;
+
       if(profit > 0)
       {
-         wins++;
          grossProfit += profit;
+         wins++;
       }
-      else
+      else if(profit < 0)
       {
+         grossLoss += -profit; 
          losses++;
-         grossLoss += MathAbs(profit);
       }
-      logger.Info(StringFormat("Trade closed: profit=%.2f | PF=%.2f", profit, PF()));
    }
 
-   double PF() { return (grossLoss > 0 ? grossProfit / grossLoss : 0); }
-   double WinRate() { return (total > 0 ? 100.0 * wins / total : 0); }
+   double GetPF()
+   {
+      if(grossLoss == 0)
+         return (grossProfit > 0 ? 999.0 : 1.0);
+      return grossProfit / grossLoss;
+   }
+
+   double GetWinRate()
+   {
+      int total = wins + losses;
+      if(total == 0) return 0.0;
+      return 100.0 * wins / total;
+   }
 };
 
-#endif // __TRADE_STATS_MQH__
+#endif
