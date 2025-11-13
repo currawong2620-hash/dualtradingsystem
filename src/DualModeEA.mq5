@@ -5,18 +5,18 @@
 #property version "1.2"
 
 //--- Core includes
-#include "Config.mqh"
-#include "Logging.mqh"
-#include "TFContext.mqh"
-#include "Forecast.mqh"
-#include "ModeAnalyzer.mqh"
+#include "Core/Config.mqh"
+#include "Core/Logging.mqh"
+#include "Core/TFContext.mqh"
+#include "Core/Forecast.mqh"
+#include "Core/ModeAnalyzer.mqh"
 
 //--- UI
-#include "..\\Panels\\Panel_Main.mqh"
+#include "Panels\\Panel_Main.mqh"
 
 //--- Trade subsystem
-#include "..\\Trade\\Trade_Types.mqh"
-#include "..\\Trade\\Trade_Manager.mqh"
+#include "Trade\\Trade_Types.mqh"
+#include "Trade\\Trade_Manager.mqh"
 
 //==== глобальные структуры ========================================//
 TFContext      gWorkCtx, gSeniorCtx;
